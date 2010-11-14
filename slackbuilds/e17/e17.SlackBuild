@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Slackware build script for Enlightenment DR17
+# Meta  Script - Builds (and installs) all other packages
+
+# Written by Asaf Ohaion <asaf@lingnu.com>
+
+cd lua && ./lua.SlackBuild
