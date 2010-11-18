@@ -5,9 +5,11 @@
 # Written by Aleksandar Samardzic <asamardzic@gmail.com>
 
 PRGNAM=ecore
-VERSION=${VERSION:-1.0.0-alpha}
+VERSION=${VERSION:-1.0.0.beta2}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
+
+source $PWD/$PRGNAM.info
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -39,6 +41,10 @@ else
 fi
 
 set -e
+
+if [ ! -f $CWD/$PRGNAM-${VERSION}.tar.gz ]; then
+    wget $DOWNLOAD
+fi
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT

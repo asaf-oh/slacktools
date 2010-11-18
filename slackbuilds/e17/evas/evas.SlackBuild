@@ -5,10 +5,10 @@
 # Written by Aleksandar Samardzic <asamardzic@gmail.com>
 
 PRGNAM=evas
-VERSION=${VERSION:-1.0.0.beta}
+VERSION=${VERSION:-1.0.0.beta2}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
-URL=`cat $PRGNAM.info | grep DOWNLOAD
+
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -25,6 +25,8 @@ TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
+source $PWD/$PRGNAM.info
+
 if [ "$ARCH" = "i486" ]; then
   SLKCFLAGS="-O2 -march=i486 -mtune=i686"
   LIBDIRSUFFIX=""
@@ -40,6 +42,11 @@ else
 fi
 
 set -e
+
+
+if [ ! -f $CWD/$PRGNAM-${VERSION}.tar.gz ]; then
+    wget $DOWNLOAD
+fi
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT

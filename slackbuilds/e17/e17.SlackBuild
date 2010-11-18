@@ -1,8 +1,24 @@
-#!/bin/sh
+#!/bin/sh -e
 
 # Slackware build script for Enlightenment DR17
 # Meta  Script - Builds (and installs) all other packages
 
 # Written by Asaf Ohaion <asaf@lingnu.com>
 
-cd lua && ./lua.SlackBuild
+PACKAGES="lua eina evas ecore eet efreet embryo edje e_dbus enlightenment"
+
+ARCH=i486
+CWD=$PWD
+for pkg in $PACKAGES; do
+    source $CWD/$pkg/$pkg.info
+    if ls /var/log/packages/$PRGNAM-* >/dev/null 2>&1; then
+	echo "skipping already installed package $pkg.."
+	sleep 2
+	continue
+    fi    
+    pushd $pkg > /dev/null
+    ./$pkg.SlackBuild    
+    pkgfile=`ls /tmp/$PRGNAM-$VERSION-$ARCH*_SBo.tgz`
+    /sbin/installpkg $pkgfile
+    popd
+done

@@ -15,6 +15,8 @@ VERSION=${VERSION:-5.1.4}
 BUILD=${BUILD:-4}
 TAG=${TAG:-_SBo}
 
+source $PWD/$PRGNAM.info
+
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -42,6 +44,10 @@ elif [ "$ARCH" = "x86_64" ]; then
 fi
 
 set -e
+
+if [ ! -f $CWD/$PRGNAM-${VERSION}.tar.gz ]; then
+    wget $DOWNLOAD
+fi
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT

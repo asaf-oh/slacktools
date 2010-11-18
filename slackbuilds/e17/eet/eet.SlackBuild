@@ -5,9 +5,11 @@
 # Written by Aleksandar Samardzic <asamardzic@gmail.com>
 
 PRGNAM=eet
-VERSION=${VERSION:-1.4.0-beta}
+VERSION=${VERSION:-1.4.0-beta2}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
+
+source $PWD/$PRGNAM.info
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -40,11 +42,15 @@ fi
 
 set -e
 
+if [ ! -f $CWD/$PRGNAM-${VERSION}.tar.gz ]; then
+    wget $DOWNLOAD
+fi
+
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.bz2
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
 chown -R root:root .
 find . \
