@@ -5,7 +5,7 @@
 
 # Written by Asaf Ohaion <asaf@lingnu.com>
 
-PACKAGES="lua eina evas ecore eet efreet embryo edje e_dbus enlightenment"
+PACKAGES="lua eina evas ecore eet efreet embryo edje e_dbus eeze enlightenment"
 
 ARCH=i486
 CWD=$PWD
