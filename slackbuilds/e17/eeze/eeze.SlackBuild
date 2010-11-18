@@ -42,7 +42,7 @@ fi
 
 set -e
 
-if [ ! -f $CWD/$PRGNAM-${VERSION}.tar.gz ]; then
+if [ ! -f $CWD/$PRGNAM-${VERSION}.tar.bz2 ]; then
     wget $DOWNLOAD
 fi
 
