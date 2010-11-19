@@ -1,3 +1,4 @@
+include(conf.m4)
 dnl
 define(`AS_HEADER',
 	 `#!/bin/sh
@@ -36,8 +37,8 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xvf CWD/PRGNAM-VERSION.tar.bz2
-cd $PRGNAM-$VERSION
+tar xvf CWD/PRGNAM-VERSION.$1
+cd PRGNAM-VERSION
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -45,16 +46,33 @@ find . \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \;')
 dnl
+define(`AS_CONFIGURE',
+	`CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+./configure \
+  --prefix=/usr \
+  --libdir=/usr/lib${LIBDIRSUFFIX} \
+  --sysconfdir=/etc \
+  --localstatedir=/var \
+  --mandir=/usr/man \
+  --docdir=/usr/doc/$PRGNAM-$VERSION \
+  --build=$ARCH-slackware-linux \
+  --disable-static')
 dnl
+define(`AS_STRIP',
+	`find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF \
+  | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true')
 dnl
-AS_HEADER(PRGNAM, VERSION, AUTHOR, EMAIL)
+define(`AS_COPY_DOCS',
+	`mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
+cp -a \
+  AUTHORS COPYING ChangeLog INSTALL NEWS README \
+  $PKG/usr/doc/$PRGNAM-$VERSION
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild')
+dnl
+define(`AS_MAKEPKG',
+	`mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
-AS_VARS(PRGNAM, VERSION)
-
-AS_ARCH
-
-set -e
-
-AS_DOWNLOAD(DOWNLOAD)
-
-AS_PREPARE
+cd $PKG
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-tgz}')
