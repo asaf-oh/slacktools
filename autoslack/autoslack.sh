@@ -18,6 +18,6 @@ CMDLINE=$CMDLINE" $1"
 
 . autoslack.conf
 
-$CMDLINE > $PRGNAM.SlackBuild
+$CMDLINE > $AS_CFG_PRGNAM.SlackBuild
 
-echo "generated $PRGNAM.SlackBuild"
+echo "generated $AS_CFG_PRGNAM.SlackBuild"

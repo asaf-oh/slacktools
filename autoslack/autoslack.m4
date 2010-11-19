@@ -10,35 +10,52 @@ define(`AS_VARS',
 `PRGNAM=$1
 VERSION=${VERSION:-$2}
 BUILD=${BUILD:-1}
-TAG=${TAG:-_SBo}')
-dnl
-dnl
-define(`AS_ARCH',
-	`# Automatically determine the architecture we're building on:
+TAG=${TAG:-_SBo}
+
 if [ -z "$ARCH" ]; then
    uname=$( uname -m )
-   if [ $uname ~= 'i?86' ]; then
+   if [[ $ARCH =~ "i?86" ]]; then
       ARCH=i486
-  elif[ $uname ~= 'arm*' ]; then    
+  elif [[ $ARCH =~ "arm*" ]]; then    
       ARCH=arm
   else
     #Unless $ARCH is already set, use uname -m for all other archs:
       ARCH=$( uname -m )
+  fi
+fi
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp/SBo}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-/tmp}
+
+if [ "$ARCH" = "i486" ]; then
+  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  SLKCFLAGS="-O2"
+  LIBDIRSUFFIX=""
 fi')
 dnl
 dnl
 define(`AS_DOWNLOAD',
-	`if [ ! -f $CWD/PRGNAM-VERSION.TAREXT ]; then
+	`if [ ! -f $CWD/$PRGNAM-$VERSION.$2 ]; then
   wget $1
 fi')
 dnl
 define(`AS_PREPARE',
-rm -rf $PKG
+`rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xvf CWD/PRGNAM-VERSION.$1
-cd PRGNAM-VERSION
+tar xvf $CWD/$PRGNAM-$VERSION.$1
+cd $PRGNAM-$VERSION
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
