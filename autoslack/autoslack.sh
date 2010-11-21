@@ -1,9 +1,30 @@
 #!/bin/bash
 
-if [ -z $1 ]; then
-    echo "usage : $0 inputfile"
+TEMPLATE=generic.SlackBuild.as
+
+function usage
+{
+    echo "usage : $0 config | config_file [template]"
     exit 0
+}
+
+if [ -n "$1" ]; then
+    # TODO: search {cfg.d/$1.conf, ./$1.conf", ./$1}
+    #    config "$1"
+    CFG_FILE=$1
+else
+    usage
+fi 
+
+if [ -n "$2" ]; then
+    TEMPLATE=$2
 fi
+
+# stdout:  if last arg is '-'
+arr=$*
+echo "arr:$arr"
+echo "${arr[$(($#-2))]}"
+exit 1
 
 CMDLINE=`which m4`
 
@@ -12,11 +33,11 @@ while read line;do
     name=`echo $line | cut -d'=' -f1`
     val=`echo $line | cut -d'=' -f2`
     [ ! -z $name ] && echo "define(\`$name', \`$val')" >> conf.m4    
-done < autoslack.conf
+done < $CFG_FILE
 
-CMDLINE=$CMDLINE" $1"
+CMDLINE=$CMDLINE" $TEMPLATE"
 
-. autoslack.conf
+. $CFG_FILE
 
 $CMDLINE > $AS_CFG_PRGNAM.SlackBuild
 
