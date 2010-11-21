@@ -5,6 +5,28 @@ define(`AS_HEADER',
 # Slackware build script for $1 $2
 # Written by $3 <$4>')
 dnl
+define(`AS_LICENSE_SLACKWARE',
+	`#
+## Copyright  2010  $1, <$2>
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+')
 dnl
 define(`AS_VARS', 
 `PRGNAM=$1
@@ -43,6 +65,11 @@ else
   LIBDIRSUFFIX=""
 fi')
 dnl
+define(`AS_CHECK_SLACKDESC',
+	`if [ ! -f slack-desc ]; then
+	echo "slack-desc is required" >&2
+	exit 10
+fi')
 dnl
 define(`AS_DOWNLOAD',
 	`if [ ! -f $CWD/$PRGNAM-$VERSION.$2 ]; then
@@ -74,6 +101,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --mandir=/usr/man \
   --docdir=/usr/doc/$PRGNAM-$VERSION \
   --build=$ARCH-slackware-linux \
+  ifdef(`AS_CFG_CONFIGURE_FLAGS',  `AS_CFG_CONFIGURE_FLAGS \',`dnl')
   --disable-static')
 dnl
 define(`AS_STRIP',
@@ -83,7 +111,7 @@ dnl
 define(`AS_COPY_DOCS',
 	`mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp -a \
-  AUTHORS COPYING ChangeLog INSTALL NEWS README \
+  $1 \
   $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild')
 dnl

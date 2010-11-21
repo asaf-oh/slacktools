@@ -1,0 +1,11 @@
+https://github.com/asaf-oh/slacktools
+
+currently contains the 'autoslack.sh' script that uses m4 template (generic.SlackBuild.as) and
+a config file (sample: cfg.d/wine.conf) to generate wine.SlackBuild (for example).
+
+all the m4 macros are in autoslack.m4
+
+future versions will also
+* generate wine.info and maybe more.
+* attempt to auto-upgrade by bumping versions.
+* enable to change configuration options and the like.
