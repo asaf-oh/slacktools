@@ -4,27 +4,50 @@ TEMPLATE=generic.SlackBuild.as
 
 function usage
 {
-    echo "usage : $0 config | config_file [template]"
+    echo "usage : $0 [-t template] config | config_file"
     exit 0
 }
 
-if [ -n "$1" ]; then
-    # TODO: search {cfg.d/$1.conf, ./$1.conf", ./$1}
-    #    config "$1"
-    CFG_FILE=$1
-else
-    usage
-fi 
+function help
+{
+    echo "usage : $0 [-t template] config | config_file"
+    exit 0
+}
 
-if [ -n "$2" ]; then
-    TEMPLATE=$2
-fi
+function error
+{
+    echo "error : $1" >&2
+    exit 10
+}
 
-# stdout:  if last arg is '-'
-arr=$*
-echo "arr:$arr"
-echo "${arr[$(($#-2))]}"
-exit 1
+[ $# -eq 0 ] && usage
+
+[[ "$1" =~ "--help" ]] && help
+
+# parse command line:
+until [ -z $1 ]; do
+    case $1 in
+	-t)
+	    TEMPLATE=$2
+	    shift 2
+	    ;;
+	*) 
+	    if [[ "$1x" =~ "-x" ]] && [ -z $2 ]; then
+		SEND2STDOUT="x"
+	    elif [ -z $2 ] || [[ "$2x" =~ "-x" ]]; then
+		CFGFILE="$1"
+	    else
+		error "unknow argument - $1"
+	    fi
+	    echo "shifting"
+	    shift 	    
+	    ;;
+    esac
+done
+
+echo "checking for $CFGFILE"
+[ -z $CFGFILE ] && error "missing argument - configuration file"
+[ -f $CFGFILE ] || error "configuration file not found - $CFGFILE"
 
 CMDLINE=`which m4`
 
@@ -33,12 +56,17 @@ while read line;do
     name=`echo $line | cut -d'=' -f1`
     val=`echo $line | cut -d'=' -f2`
     [ ! -z $name ] && echo "define(\`$name', \`$val')" >> conf.m4    
-done < $CFG_FILE
+done < $CFGFILE
 
 CMDLINE=$CMDLINE" $TEMPLATE"
 
-. $CFG_FILE
+. $CFGFILE
 
-$CMDLINE > $AS_CFG_PRGNAM.SlackBuild
+if [ -z $SEND2STDOUT ]; then
+    echo 'no stdout'
+    $CMDLINE > $AS_CFG_PRGNAM.SlackBuild
+else
+    $CMDLINE
+fi
 
 echo "generated $AS_CFG_PRGNAM.SlackBuild"
