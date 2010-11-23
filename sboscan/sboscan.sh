@@ -21,22 +21,34 @@ function error
     exit 10
 }
 
+function download
+{
+    wget --no-check-certificate $1 || error "wget returns $?"
+    
+}
+
 [[ "$1" =~ "--help" ]] && help
 
 [ $# -eq 1 ] || usage
 
 case $1 in
-  http://*|https://*|ftp://*)  download $1
+  http://*|https://*|ftp://*)  
+	download $1
 	;;
- *.tar.*) echo "tarball"
+ *.tar.*) 
 	[ -f $1 ] || error "no such file $1"
+	TARNAME=$1
 	;;
     *)
 	error "$1 is not a tarball or URL"
 	;;
 esac
 
-echo -n "name : "
-echo `basename $1` | cut -f1 -d'-'
-echo -n "version : "
-echo $1 | cut -f2 -d'-' # see substrings
+name=`basename $1`
+name=`echo $name | cut -f1 -d'-'`
+version=`echo $1 | cut -f2 -d'-' | cut -d't' -f1`
+version_len=${#version}
+version=${version:0:$((version_len-1))}
+echo $1 | cut -d't' -f2
+
+

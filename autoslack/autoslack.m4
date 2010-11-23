@@ -1,10 +1,8 @@
-include(conf.m4)
-dnl
+include(conf.m4) dnl
 define(`AS_HEADER',
 	 `#!/bin/sh
 # Slackware build script for $1 $2
-# Written by $3 <$4>')
-dnl
+# Written by $3 <$4>') dnl
 define(`AS_LICENSE_SLACKWARE',
 	`#
 ## Copyright  2010  $1, <$2>
@@ -26,8 +24,7 @@ define(`AS_LICENSE_SLACKWARE',
 #  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 #  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-')
-dnl
+') dnl
 define(`AS_VARS', 
 `PRGNAM=$1
 VERSION=${VERSION:-$2}
@@ -63,19 +60,16 @@ elif [ "$ARCH" = "x86_64" ]; then
 else
   SLKCFLAGS="-O2"
   LIBDIRSUFFIX=""
-fi')
-dnl
+fi')dnl
 define(`AS_CHECK_SLACKDESC',
 	`if [ ! -f slack-desc ]; then
 	echo "slack-desc is required" >&2
 	exit 10
-fi')
-dnl
+fi')dnl
 define(`AS_DOWNLOAD',
 	`if [ ! -f $CWD/$PRGNAM-$VERSION.$2 ]; then
   wget $1
-fi')
-dnl
+fi')dnl
 define(`AS_PREPARE',
 `rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -88,8 +82,7 @@ find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
  -exec chmod 755 {} \; -o \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
- -exec chmod 644 {} \;')
-dnl
+ -exec chmod 644 {} \;')dnl
 define(`AS_CONFIGURE',
 	`if [ ! -f "configure" ]; then
 	./autogen.sh
@@ -105,22 +98,30 @@ CXXFLAGS="$SLKCFLAGS" \
   --docdir=/usr/doc/$PRGNAM-$VERSION \
   --build=$ARCH-slackware-linux \
   ifdef(`AS_CFG_CONFIGURE_FLAGS',  `AS_CFG_CONFIGURE_FLAGS \',`dnl')
-  --disable-static')
-dnl
+  --disable-static')dnl
 define(`AS_STRIP',
 	`find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF \
-  | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true')
-dnl
+  | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true')dnl
 define(`AS_COPY_DOCS',
 	`mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp -a \
   $1 \
   $PKG/usr/doc/$PRGNAM-$VERSION
-cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild')
-dnl
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild')dnl
 define(`AS_MAKEPKG',
 	`mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-tgz}')
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-tgz}')dnl
+dnl 	      slack-desc:
+define(`AS_SLACKDESK_HELP',
+		`# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first "|" above the ":" following the base package name, and the "|"
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  Its also
+# customary to leave one space after the ":". 
+')dnl
+define(`AS_SPACES', `    ')dnl
+define(`AS_SLACKDESK_RULER',`AS_SPACES|-----handy-ruler------------------------------------------------------|')dnl
