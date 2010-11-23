@@ -91,7 +91,10 @@ find . \
  -exec chmod 644 {} \;')
 dnl
 define(`AS_CONFIGURE',
-	`CFLAGS="$SLKCFLAGS" \
+	`if [ ! -f "configure" ]; then
+	./autogen.sh
+fi
+CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
 ./configure \
   --prefix=/usr \

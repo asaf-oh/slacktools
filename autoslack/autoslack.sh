@@ -16,7 +16,7 @@ function help
 
 function error
 {
-    echo "error : $1" >&2
+    echo "$0 : error : $1" >&2
     exit 10
 }
 
