@@ -1,0 +1,45 @@
+Index: src/usr/sbin/sbopkg
+===================================================================
+--- src/usr/sbin/sbopkg	(revision 849)
++++ src/usr/sbin/sbopkg	(working copy)
+@@ -1088,6 +1088,24 @@
+     rm -f $AFSP
+ }
+ 
++change_app_version() {
++    # This function shows a dialog to change the application version
++    # in SlackBuild and info files 
++    dialog --title "Change $1 version" --ok-label "Change" \
++	--inputbox \
++        "Enter version for $1 at $2" 11 41 2> $TERM_FILE
++    case $? in
++	0) 
++	    local version=$(< $TERM_FILE)
++	    dialog --title "Change $PKGPATH version" --msgbox "Changin...$version" 11 41 
++	    ;;
++	1) 
++	    ;;
++    esac
++
++    rm -f $TERM_FILE
++}
++
+ info_item() {
+     # This function shows the menu for each package where the user can see
+     # certain information or build the package.
+@@ -1167,6 +1185,7 @@
+             "Check GPG" "Check the GPG signature of the $REPO_NAME tarball" \
+             "Extract" "Re-extract the $REPO_NAME tarball" \
+             "Queue" "Add $APP to build queue" \
++            "Version" "Change $APP version" \
+             "Build" "Build a package for $APP" \
+             $MENUPACKAGE \
+             2> $SBOPKGTMP/sbopkg_info_selection
+@@ -1238,6 +1257,7 @@
+                                 repository.")" 8 30
+                         fi
+                         ;;
++                    Version ) change_app_version $APP $SHORTPATH ;;
+                     Queue ) add_item_to_queue $APP ;;
+                     Build )
+                         echo "$APP" > $STARTQUEUE
