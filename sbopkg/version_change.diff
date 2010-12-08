@@ -2,7 +2,7 @@ Index: src/usr/sbin/sbopkg
 ===================================================================
 --- src/usr/sbin/sbopkg	(revision 849)
 +++ src/usr/sbin/sbopkg	(working copy)
-@@ -1088,6 +1088,24 @@
+@@ -1088,6 +1088,25 @@
      rm -f $AFSP
  }
  
@@ -11,11 +11,12 @@ Index: src/usr/sbin/sbopkg
 +    # in SlackBuild and info files 
 +    dialog --title "Change $1 version" --ok-label "Change" \
 +	--inputbox \
-+        "Enter version for $1 at $2" 11 41 2> $TERM_FILE
++        "Enter version for $1" 11 41 2> $TERM_FILE
 +    case $? in
 +	0) 
 +	    local version=$(< $TERM_FILE)
-+	    dialog --title "Change $PKGPATH version" --msgbox "Changin...$version" 11 41 
++	   #  dialog --title "Change $1 version" --msgbox "Changin...$version" 11 41 
++	    echo "$1_version=$version" >> $SBOPKGTMP/version_override	    
 +	    ;;
 +	1) 
 +	    ;;
@@ -27,7 +28,7 @@ Index: src/usr/sbin/sbopkg
  info_item() {
      # This function shows the menu for each package where the user can see
      # certain information or build the package.
-@@ -1167,6 +1185,7 @@
+@@ -1167,6 +1186,7 @@
              "Check GPG" "Check the GPG signature of the $REPO_NAME tarball" \
              "Extract" "Re-extract the $REPO_NAME tarball" \
              "Queue" "Add $APP to build queue" \
@@ -35,7 +36,7 @@ Index: src/usr/sbin/sbopkg
              "Build" "Build a package for $APP" \
              $MENUPACKAGE \
              2> $SBOPKGTMP/sbopkg_info_selection
-@@ -1238,6 +1257,7 @@
+@@ -1238,6 +1258,7 @@
                                  repository.")" 8 30
                          fi
                          ;;
@@ -43,3 +44,20 @@ Index: src/usr/sbin/sbopkg
                      Queue ) add_item_to_queue $APP ;;
                      Build )
                          echo "$APP" > $STARTQUEUE
+@@ -3279,6 +3300,16 @@
+ 
+     cd $REPO_DIR/$PKGPATH
+ 
++    # Check for version override    
++    if [ -f  $SBOPKGTMP/version_override ] && 
++	grep $PKGNAME"_version" $SBOPKGTMP/version_override  
++    then
++	new_version=$(grep $PKGNAME"_version" $SBOPKGTMP/version_override | cut -d'=' -f 2)
++	cur_version=$(grep VERSION $REPO_DIR/$PKGPATH/$PKGNAME".info.build" | cut -d'=' -f 2 | sed 's/"//g')
++	sed -i "s/$cur_version/$new_version/g" $REPO_DIR/$PKGPATH/$PKGNAME.info.build
++	echo $REPO_DIR/$PKGPATH/$PKGNAME".info.build"
++    fi
++    
+     # Start the actual build
+     # We loop here to enable a 'retry' if anything goes wrong with the build
+     while :; do
